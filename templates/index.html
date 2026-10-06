@@ -46,7 +46,7 @@
   * { box-sizing:border-box; }
   body { margin:0; min-height:100vh; color:var(--text); overflow-x:hidden;
     font-family:"Outfit","Noto Sans Telugu","Nirmala UI","Segoe UI",system-ui,sans-serif; line-height:1.6;
-    background:linear-gradient(135deg,var(--bg1),var(--bg2) 55%,var(--bg3)); background-attachment:fixed; }
+    background:linear-gradient(135deg,var(--bg1),var(--bg2) 55%,var(--bg3)); }
   .hidden { display:none !important; }
 
   /* ===== 3D animated background ===== */
@@ -54,9 +54,9 @@
     background:radial-gradient(1100px 650px at 12% -8%,var(--aur1),transparent 62%),
                radial-gradient(900px 600px at 98% 8%,var(--aur2),transparent 62%),
                radial-gradient(1000px 700px at 50% 118%,var(--aur3),transparent 62%); }
-  .aurora { position:absolute; inset:-25%; opacity:.4; filter:blur(90px);
-    background:conic-gradient(from 0deg at 50% 50%,transparent,var(--aur1),transparent 28%,var(--aur2),transparent 58%,var(--aur3),transparent);
-    animation:spin 50s linear infinite; }
+  .aurora { position:absolute; inset:-20%; opacity:.5; will-change:transform;
+    background:radial-gradient(40% 40% at 30% 35%,var(--aur1),transparent 70%),radial-gradient(38% 38% at 72% 40%,var(--aur2),transparent 70%),radial-gradient(40% 40% at 50% 78%,var(--aur3),transparent 70%);
+    animation:spin 60s linear infinite; }
   .grid3d { position:absolute; left:-60%; right:-60%; bottom:-8%; height:62%; opacity:.55;
     background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
     background-size:64px 64px; transform:perspective(520px) rotateX(64deg); transform-origin:50% 100%;
@@ -69,7 +69,7 @@
   html[data-theme="light"] .stars, html[data-theme="contrast"] .stars { display:none; }
   .scene3d { position:absolute; inset:0; perspective:1000px; }
   .cube { position:absolute; width:var(--s); height:var(--s); transform-style:preserve-3d; animation:cubeSpin var(--d) linear infinite; opacity:.7; }
-  .cube i { position:absolute; inset:0; border:1.5px solid var(--cube-b); background:var(--cube-bg); backdrop-filter:blur(2px); }
+  .cube i { position:absolute; inset:0; border:1.5px solid var(--cube-b); background:var(--cube-bg); }
   .cube i:nth-child(1) { transform:translateZ(calc(var(--s)/2)); }
   .cube i:nth-child(2) { transform:rotateY(180deg) translateZ(calc(var(--s)/2)); }
   .cube i:nth-child(3) { transform:rotateY(90deg) translateZ(calc(var(--s)/2)); }
@@ -100,6 +100,35 @@
   html[data-motion="off"] .aurora, html[data-motion="off"] .grid3d, html[data-motion="off"] .stars,
   html[data-motion="off"] .cube, html[data-motion="off"] .ring { animation:none; }
   @media (prefers-reduced-motion: reduce) { .aurora, .grid3d, .stars, .cube, .ring { animation:none; } }
+
+
+  /* ===== top risk indicator (sticky) ===== */
+  .ind-bar { position:sticky; top:env(safe-area-inset-top,0px); z-index:12; display:flex; align-items:center; gap:12px; margin-top:18px; padding:10px 12px;
+    border-radius:16px; background:var(--side); border:1px solid var(--card-b); border-left:6px solid var(--accent2); box-shadow:0 8px 20px var(--shadow); }
+  .ind-bar[data-level="high"] { border-left-color:var(--bad); }
+  .ind-bar[data-level="mid"] { border-left-color:var(--warn); }
+  .ind-bar[data-level="safe"] { border-left-color:var(--ok); }
+  .ind-bar .verdict-ico { width:52px; height:52px; font-size:1.9rem; border-radius:14px; flex:none; }
+  .ind-text { flex:1; min-width:0; }
+  .ind-score { font-weight:800; font-size:1.25rem; white-space:nowrap; }
+  .ind-bar .btn { padding:9px 14px; font-size:.9rem; box-shadow:none; flex:none; }
+  @media (max-width: 520px) {
+    .ind-bar { gap:8px; padding:8px 10px; }
+    .ind-bar .verdict-ico { width:42px; height:42px; font-size:1.5rem; }
+    .ind-bar .btn { padding:8px 10px; font-size:.8rem; }
+    .ind-bar .level { font-size:1.05rem; }
+    .ind-score { font-size:1.05rem; }
+  }
+
+  /* ===== lite mode: phones and low-end devices (set by script) ===== */
+  html[data-perf="lite"] .card, html[data-perf="lite"] .sidebar { backdrop-filter:none; -webkit-backdrop-filter:none; }
+  html[data-perf="lite"] .card { box-shadow:0 6px 16px var(--shadow); }
+  html[data-perf="lite"] .aurora, html[data-perf="lite"] .grid3d, html[data-perf="lite"] .stars { animation:none; }
+  html[data-perf="lite"] .ring, html[data-perf="lite"] .c3, html[data-perf="lite"] .c4 { display:none; }
+  html[data-perf="lite"] .danger-banner, html[data-perf="lite"] .sign, html[data-perf="lite"] .steps-list li,
+  html[data-perf="lite"] .verdict-ico, html[data-perf="lite"] .modal { animation:none; }
+  html[data-perf="lite"] .tilt { transform:none !important; }
+  html[data-perf="lite"] .orbit-ico { filter:none; }
 
   /* ===== sidebar ===== */
   .sidebar { position:fixed; left:0; top:0; bottom:0; width:340px; overflow-y:auto; z-index:20;
@@ -166,8 +195,8 @@
   /* ===== cards, 3D tilt ===== */
   .card { background:var(--card); border:1px solid var(--card-b); border-radius:20px; padding:18px; margin-top:18px;
     backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); box-shadow:0 14px 34px var(--shadow); }
-  .tilt { transition:transform .18s ease-out, box-shadow .18s; transform-style:preserve-3d; will-change:transform; }
-  .tilt.on { box-shadow:0 24px 48px var(--shadow); }
+  .tilt { transition:transform .18s ease-out, box-shadow .18s; }
+  .tilt.on { box-shadow:0 24px 48px var(--shadow); will-change:transform; }
   textarea { width:100%; min-height:150px; padding:14px; border-radius:14px; border:1px solid var(--card-b); background:var(--input);
     color:var(--text); font:inherit; resize:vertical; }
   textarea:focus, button:focus-visible, select:focus-visible, a:focus-visible, .drop:focus-visible { outline:3px solid var(--accent2); outline-offset:2px; }
@@ -447,11 +476,13 @@
     </section>
 
     <div id="out" class="hidden" aria-live="polite">
+      <div class="ind-bar" id="indBar" data-level="low">
+        <div class="verdict-ico" id="vIco"></div>
+        <div class="ind-text"><div class="level" id="level"></div><div class="why" id="detected"></div></div>
+        <div class="ind-score" id="indScore"></div>
+        <button type="button" class="btn" id="listenBtn"></button>
+      </div>
       <section class="card tilt">
-        <div class="verdict">
-          <div class="verdict-ico" id="vIco"></div>
-          <div><div class="level" id="level"></div><div class="why" id="detected"></div></div>
-        </div>
         <div class="danger-banner hidden" id="dangerBanner" role="alert"></div>
         <div class="gauge-wrap">
           <svg viewBox="0 0 200 118" aria-hidden="true">
@@ -466,7 +497,6 @@
         <div class="why" id="scores"></div>
         <p id="explain"></p>
         <div class="emergency hidden" id="emergency"><span id="emText"></span><a class="btn call" href="tel:1930" id="emBtn"></a></div>
-        <div class="listen-bar"><button type="button" class="btn" id="listenBtn"></button></div>
       </section>
       <section class="card note-card hidden" id="noteCard"><span id="noteText"></span></section>
       <section class="card">
@@ -639,6 +669,8 @@ const EXAMPLES = {
 let lang = "en";
 const $ = (id) => document.getElementById(id);
 const root = document.documentElement;
+const LITE = window.matchMedia("(max-width: 900px), (pointer: coarse)").matches || (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 4;
+root.setAttribute("data-perf", LITE ? "lite" : "full");
 const motionOn = () => root.dataset.motion === "on" && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 function store(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
 function load(k, d) { try { return localStorage.getItem(k) || d; } catch (e) { return d; } }
@@ -789,6 +821,8 @@ function renderResult(d) {
   const u = UI[lang];
   $("out").classList.remove("hidden");
   $("level").textContent = d.level;
+  $("indScore").textContent = d.score + "/100";
+  $("indBar").dataset.level = d.indicators_found.length === 0 ? "safe" : d.score >= 60 ? "high" : d.score >= 35 ? "mid" : "low";
   $("vIco").textContent = d.indicators_found.length === 0 ? "✅" : d.score >= 60 ? "🚨" : d.score >= 35 ? "⚠️" : "ℹ️";
   const needle = $("needle"); needle.style.transform = "rotate(-90deg)";
   void needle.getBoundingClientRect();
@@ -873,24 +907,41 @@ const SPEECH = {
   }
 };
 const RATES = { slow: 0.8, normal: 1, fast: 1.2 };
-const FEMALE_RX = /female|woman|zira|hazel|susan|samantha|karen|moira|tessa|fiona|veena|heera|kalpana|shruti|swara|neerja|aditi|raveena|lekha|geeta|priya|ananya|sangeeta|aarohi|isha/i;
-const MALE_RX = /\bmale\b|\bman\b|david|mark|george|james|daniel|fred|rishi|ravi|hemant|prabhat|madhur|mohan|rahul|vijay/i;
+const FEMALE_RX = /female|woman|girl|zira|hazel|susan|samantha|karen|moira|tessa|fiona|veena|heera|kalpana|shruti|swara|neerja|aditi|raveena|lekha|geeta|priya|ananya|sangeeta|aarohi|isha|chilka/i;
+const MALE_RX = /\bmale\b|\bman\b|david|mark|george|james|daniel|fred|rishi|ravi|hemant|prabhat|madhur|mohan|rahul|vijay|arjun|kabir|manohar|rajesh|sunil|anil/i;
+const NAME_RX = { te: /telugu|తెలుగు/i, hi: /hindi|हिन्दी|हिंदी/i };
+const LANG3 = { eng: "en", tel: "te", hin: "hi" };
+const LANGTAG = { en: "en-IN", te: "te-IN", hi: "hi-IN" };
 const VOICE = { on: load("csp_von", "on") === "on", lang: load("csp_vlang", ""), gender: load("csp_vgender", "female"), speed: load("csp_vspeed", "normal"), name: load("csp_vvoice", "") };
 let voiceList = [], lastResult = null, speaking = false, speakToken = 0;
 
 function voiceSupported() { return "speechSynthesis" in window && typeof window.SpeechSynthesisUtterance === "function"; }
 function refreshVoices() { voiceList = voiceSupported() ? (speechSynthesis.getVoices() || []) : []; }
 function voiceLang() { return VOICE.lang || (lang === "te" ? "te" : "en"); }
-function voicesFor(l) { return voiceList.filter((v) => (v.lang || "").toLowerCase().replace("_", "-").split("-")[0] === l); }
-function genderOf(v) { if (FEMALE_RX.test(v.name)) return "female"; if (MALE_RX.test(v.name)) return "male"; return ""; }
+function baseLang(v) { const b = (v.lang || "").toLowerCase().replace(/_/g, "-").split("-")[0]; return LANG3[b] || b; }
+function voicesFor(l) { return voiceList.filter((v) => baseLang(v) === l || (NAME_RX[l] && NAME_RX[l].test(v.name || ""))); }
+function genderOf(v) { if (!v) return ""; if (FEMALE_RX.test(v.name)) return "female"; if (MALE_RX.test(v.name)) return "male"; return ""; }
+// Male = deep and bass in every language. Real male voices get a small drop, female/unknown voices a big drop.
+function pitchFor(v) {
+  const g = genderOf(v);
+  if (VOICE.gender === "male") return g === "male" ? 0.85 : 0.55;
+  return g === "male" ? 1.25 : 1;
+}
+function rateFor() { const r = RATES[VOICE.speed] || 1; return VOICE.gender === "male" ? r * 0.92 : r; }
+function isIN(v) { return /-IN$/i.test((v.lang || "").replace(/_/g, "-")); }
 function pickVoice(l) {
   const list = voicesFor(l);
   if (!list.length) return null;
   const manual = VOICE.name && list.find((v) => v.name === VOICE.name);
-  if (manual) return { voice: manual, pitch: 1, how: "manual" };
-  const same = list.filter((v) => genderOf(v) === VOICE.gender);
-  if (same.length) { same.sort((a, b) => Number(/-IN$/i.test(b.lang)) - Number(/-IN$/i.test(a.lang))); return { voice: same[0], pitch: 1, how: "gender" }; }
-  return { voice: list[0], pitch: VOICE.gender === "male" ? 0.75 : 1.2, how: "pitch" };
+  if (manual) { const g = genderOf(manual); return { voice: manual, pitch: g === VOICE.gender ? (g === "male" ? 0.85 : 1) : pitchFor(manual), how: "manual" }; }
+  // local voices first: online voices (e.g. Google on desktop Chrome) ignore the pitch setting
+  const rank = (a, b) => (Number(isIN(b)) - Number(isIN(a))) || (Number(!!b.localService) - Number(!!a.localService));
+  const same = list.filter((v) => genderOf(v) === VOICE.gender).sort(rank);
+  if (same.length) return { voice: same[0], pitch: pitchFor(same[0]), how: "gender" };
+  const neutral = list.filter((v) => !genderOf(v));
+  const pool = (neutral.length ? neutral : list).slice().sort(rank);
+  const pitch = pitchFor(pool[0]);
+  return { voice: pool[0], pitch: pitch, how: pitch !== 1 ? "pitch" : "auto" };
 }
 function fmt(t, o) { return Object.keys(o).reduce((a, k) => a.split("{" + k + "}").join(o[k]), t); }
 
@@ -901,26 +952,49 @@ function buildSpeech(d, l) {
   return (d.score >= 60 ? S.high : S.mid) + (reasons.length ? " " + S.why + " " + reasons.join(", ") + "." : "");
 }
 function updateListenBtn() { $("listenBtn").textContent = speaking ? UI[lang].stopListen : UI[lang].listen; $("listenBtn").setAttribute("aria-pressed", String(speaking)); }
-function stopSpeaking() { speakToken++; speaking = false; if (voiceSupported()) speechSynthesis.cancel(); updateListenBtn(); }
-function primeVoice() { if (voiceSupported() && VOICE.on) { try { const u = new SpeechSynthesisUtterance(" "); u.volume = 0; speechSynthesis.speak(u); } catch (e) {} } }
-
+function stopSpeaking() { speakToken++; speaking = false; if (voiceSupported()) { try { speechSynthesis.cancel(); } catch (e) {} } updateListenBtn(); }
+function primeVoice() { if (voiceSupported() && VOICE.on) { refreshVoices(); try { const u = new SpeechSynthesisUtterance(" "); u.volume = 0; speechSynthesis.speak(u); } catch (e) {} } }
+function chunkText(t) {            // short chunks of 1-2 sentences: avoids Chrome's long-text cut-off and Android stutter
+  const parts = t.match(/[^.!?।]+[.!?।]*/g) || [t], out = []; let cur = "";
+  parts.forEach((p) => { p = p.trim(); if (!p) return; if (cur && (cur + " " + p).length > 170) { out.push(cur); cur = p; } else cur = cur ? cur + " " + p : p; });
+  if (cur) out.push(cur);
+  return out;
+}
+function voiceFailNotice(l) { showInfo(fmt(UI[lang].voiceNoLang, { l: UI[lang].vlName[l] })); }
+function speakWith(l, pick, textFor, token, canFallback) {
+  const chunks = chunkText(textFor(l));
+  let i = 0, started = false, watchdog = null;
+  const fail = () => {
+    clearTimeout(watchdog);
+    if (token !== speakToken) return;
+    try { speechSynthesis.cancel(); } catch (e) {}
+    if (canFallback && l !== "en") { voiceFailNotice(l); speakWith("en", pickVoice("en"), textFor, token, false); }
+    else { speaking = false; updateListenBtn(); }
+  };
+  const next = () => {
+    if (token !== speakToken) return;
+    if (i >= chunks.length) { speaking = false; updateListenBtn(); return; }
+    const u = new SpeechSynthesisUtterance(chunks[i++]), v = pick && pick.voice;
+    if (v) u.voice = v;
+    u.lang = v ? (v.lang || LANGTAG[l]).replace(/_/g, "-") : LANGTAG[l];   // Android needs "te-IN", not "te_IN"
+    u.pitch = pick ? pick.pitch : (VOICE.gender === "male" ? 0.55 : 1);
+    u.rate = rateFor();
+    u.onstart = () => { started = true; clearTimeout(watchdog); };
+    u.onend = next;
+    u.onerror = (e) => { if (token !== speakToken || e.error === "canceled" || e.error === "interrupted") return; if (!started) fail(); else next(); };
+    speechSynthesis.speak(u);
+    if (!started) { clearTimeout(watchdog); watchdog = setTimeout(() => { if (!started) fail(); }, 5000); }
+  };
+  next();
+}
 function speak(textFor) {          // textFor(l) returns the sentence(s) for language l
   if (!voiceSupported()) return;
-  let l = voiceLang(), pick = pickVoice(l);
-  if (!pick && l !== "en") { l = "en"; pick = pickVoice("en"); }
-  if (!pick) return;
+  refreshVoices();
+  const l = voiceLang(), pick = pickVoice(l);   // no installed voice for te/hi: still try the engine's own te-IN / hi-IN voice
   stopSpeaking();
-  const token = speakToken, parts = textFor(l).match(/[^.!?।]+[.!?।]*/g) || [];
+  const token = speakToken;
   speaking = true; updateListenBtn();
-  setTimeout(() => {
-    if (token !== speakToken) return;
-    parts.forEach((part, i) => {
-      const u = new SpeechSynthesisUtterance(part.trim());
-      u.voice = pick.voice; u.lang = pick.voice.lang; u.pitch = pick.pitch; u.rate = RATES[VOICE.speed] || 1;
-      if (i === parts.length - 1) { u.onend = u.onerror = () => { if (token === speakToken) { speaking = false; updateListenBtn(); } }; }
-      speechSynthesis.speak(u);
-    });
-  }, 80);
+  setTimeout(() => { if (token === speakToken) speakWith(l, pick, textFor, token, true); }, 150);
 }
 function speakResult(d) { speak((l) => buildSpeech(d, l)); }
 
@@ -947,16 +1021,22 @@ function voiceRefresh() {
   const sup = voiceSupported();
   $("vLang").value = voiceLang(); voiceMark("vOnSeg", VOICE.on ? "on" : "off"); voiceMark("vGenderSeg", VOICE.gender); voiceMark("vSpeedSeg", VOICE.speed);
   ["vLang", "vVoice", "vTest"].forEach((id) => { $(id).disabled = !sup; });
-  $("listenBtn").classList.toggle("hidden", !sup || !voiceList.length);
+  $("listenBtn").classList.toggle("hidden", !sup);
   fillVoiceSelect(); updateVoiceStatus(); updateListenBtn();
 }
-if (voiceSupported()) { refreshVoices(); speechSynthesis.addEventListener("voiceschanged", () => { refreshVoices(); voiceRefresh(); }); }
+if (voiceSupported()) {
+  refreshVoices();
+  speechSynthesis.addEventListener("voiceschanged", () => { refreshVoices(); voiceRefresh(); });
+  // Android Chrome often fills the voice list late and sometimes never fires "voiceschanged": poll for a few seconds
+  let tries = 0;
+  const poll = setInterval(() => { const n = voiceList.length; refreshVoices(); if (voiceList.length !== n) voiceRefresh(); if (voiceList.length || ++tries > 12) clearInterval(poll); }, 500);
+}
 
 /* ===== 3D: tilt cards, hero parallax and orbiting icons ===== */
 let tiltEl = null;
 function resetTilt(el) { if (el) { el.style.transform = ""; el.classList.remove("on"); } }
 document.addEventListener("pointermove", (e) => {
-  if (!motionOn() || e.pointerType === "touch") return;
+  if (!motionOn() || LITE || e.pointerType === "touch") return;
   const hero = $("heroTilt");
   const w = window.innerWidth, h = window.innerHeight;
   hero.style.setProperty("--ry", ((e.clientX / w - 0.5) * 50) + "deg");
@@ -971,16 +1051,21 @@ document.addEventListener("pointermove", (e) => {
 });
 document.addEventListener("pointerleave", () => { resetTilt(tiltEl); tiltEl = null; });
 const orbitIcons = Array.from(document.querySelectorAll(".orbit-ico"));
+let orbitRunning = false, lastOrbit = 0;
 function orbit(t) {
   const on = motionOn();
-  orbitIcons.forEach((el, i) => {
-    const a = (on ? t / 1800 : 0) + i * Math.PI / 2;
-    const x = Math.cos(a) * 118, z = Math.sin(a) * 118, y = Math.sin(a * 2) * 12;
-    el.style.transform = "translate3d(" + x.toFixed(1) + "px," + y.toFixed(1) + "px," + z.toFixed(1) + "px) scale(" + (0.85 + (z + 118) / 600).toFixed(2) + ")";
-  });
-  if (on) requestAnimationFrame(orbit);
+  if (!on || t - lastOrbit >= (LITE ? 42 : 16)) {      // lite devices: ~24 frames per second is plenty
+    lastOrbit = t;
+    orbitIcons.forEach((el, i) => {
+      const a = (on ? t / 1800 : 0) + i * Math.PI / 2;
+      const x = Math.cos(a) * 118, z = Math.sin(a) * 118, y = Math.sin(a * 2) * 12;
+      el.style.transform = "translate3d(" + x.toFixed(1) + "px," + y.toFixed(1) + "px," + z.toFixed(1) + "px) scale(" + (0.85 + (z + 118) / 600).toFixed(2) + ")";
+    });
+  }
+  if (on && !document.hidden) requestAnimationFrame(orbit); else orbitRunning = false;
 }
-function startOrbit() { requestAnimationFrame(orbit); }
+function startOrbit() { if (orbitRunning) return; orbitRunning = true; requestAnimationFrame(orbit); }
+document.addEventListener("visibilitychange", () => { if (!document.hidden) startOrbit(); });
 
 /* ===== wiring (no inline handlers, so the strict CSP stays on) ===== */
 $("pickEn").addEventListener("click", () => setLang("en"));
@@ -1028,7 +1113,7 @@ $("listenBtn").addEventListener("click", () => { if (speaking) { stopSpeaking();
 
 setSetting("theme", load("csp_theme", "dark"));
 setSetting("size", load("csp_size", "m"));
-setSetting("motion", load("csp_motion", "on"));
+setSetting("motion", load("csp_motion", LITE ? "off" : "on"));   // phones start with 3D off; the user can turn it on
 applyLang();
 startOrbit();
 $("chooser").classList.remove("hidden");
