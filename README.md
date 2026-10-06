@@ -7,7 +7,9 @@ A bilingual (English / Telugu) web app that checks a suspicious message (typed, 
 - Messages up to 5000 characters; screenshots are read on the user's own device (OCR) and never uploaded
 - Risk meter, reasons, recommended actions, and the national Cyber Crime Helpline (1930, cybercrime.gov.in)
 - Voice assistant (English / Telugu / Hindi, male or female voice) that reads the warning aloud
-- Language chooser, light / dark / high-contrast themes, text-size settings, 3D visual effects
+- Language chooser, light / dark / high-contrast themes, text-size settings, 3D visual effects (automatically lighter on phones; 3D starts OFF on phones)
+- Risk indicator stays pinned at the top of the results while scrolling
+- Male voice is deep/bass in every language (lowered pitch when the device has no real male voice)
 - Security: strict Content-Security-Policy, security headers, rate limiting, input validation
 
 ## Run on your computer
